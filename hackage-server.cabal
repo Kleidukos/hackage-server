@@ -1,88 +1,90 @@
-cabal-version: 3.0
-name:         hackage-server
-version:      0.5.1
+cabal-version:      3.0
+name:               hackage-server
+version:            0.5.1
+category:           Distribution
+synopsis:           The Hackage web server
+description:
+  The new implementation of the Hackage web server, based on the
+  Happstack architecture. This is the implementation used to power
+  <http://hackage.haskell.org/>
+  .
+  It is designed to be easy to run your own instance.
+  It also includes a doc builder client and a mirroring client.
 
-category:     Distribution
-synopsis:     The Hackage web server
-description:  The new implementation of the Hackage web server, based on the
-              Happstack architecture. This is the implementation used to power
-              <http://hackage.haskell.org/>
-              .
-              It is designed to be easy to run your own instance.
-              It also includes a doc builder client and a mirroring client.
+author:
+  Duncan Coutts <duncan@community.haskell.org>,
+  David Himmelstrup <lemmih@gmail.com>,
+  Ross Paterson <ross@soi.city.ac.uk>,
+  Matthew Gruen <wikigracenotes@gmail.com>
 
-author:       Duncan Coutts <duncan@community.haskell.org>,
-              David Himmelstrup <lemmih@gmail.com>,
-              Ross Paterson <ross@soi.city.ac.uk>,
-              Matthew Gruen <wikigracenotes@gmail.com>
-maintainer:   Duncan Coutts <duncan@community.haskell.org>,
-              Matthew Gruen <wikigracenotes@gmail.com>
-copyright:    2008-2015 Duncan Coutts,
-              2012-2013 Edsko de Vries,
-              2013 Google Inc.,
-              2010-2011 Matthew Gruen,
-              2009-2010 Antoine Latter,
-              2008 David Himmelstrup,
-              2007 Ross Paterson
-license:      BSD-3-Clause
-license-file: LICENSE
+maintainer:
+  Duncan Coutts <duncan@community.haskell.org>,
+  Matthew Gruen <wikigracenotes@gmail.com>
 
-tested-with: GHC == { 8.10.5, 8.8.4 }
+copyright:
+  2008-2015 Duncan Coutts,
+  2012-2013 Edsko de Vries,
+  2013 Google Inc.,
+  2010-2011 Matthew Gruen,
+  2009-2010 Antoine Latter,
+  2008 David Himmelstrup,
+  2007 Ross Paterson
 
-data-dir: datafiles
+license:            BSD-3-Clause
+license-file:       LICENSE
+tested-with:        GHC ==8.8.4 || ==8.10.5
+data-dir:           datafiles
 data-files:
-  templates/**/*.st
-
   static/**/*.css
-  static/**/*.js
-  static/**/*.svg
-  static/**/*.png
   static/**/*.ico
-
-  TUF/README.md
+  static/**/*.js
+  static/**/*.png
+  static/**/*.svg
+  templates/**/*.st
   TUF/mirrors.json
+  TUF/README.md
   TUF/root.json
   TUF/snapshot.private
   TUF/timestamp.private
 
 extra-source-files:
   tests/permissions-tarballs/*.tar.gz
-  tests/unpack-checks/correct-package-0.1.0.0/LICENSE
-  tests/unpack-checks/correct-package-0.1.0.0/Main.hs
-  tests/unpack-checks/correct-package-0.1.0.0/Setup.hs
-  tests/unpack-checks/correct-package-0.1.0.0/correct-package.cabal
-  tests/unpack-checks/missing-configure-0.1.0.0/LICENSE
-  tests/unpack-checks/missing-configure-0.1.0.0/Main.hs
-  tests/unpack-checks/missing-configure-0.1.0.0/Setup.hs
-  tests/unpack-checks/missing-configure-0.1.0.0/missing-configure.cabal
+  tests/unpack-checks/bad-specver-package-0/bad-specver-package.cabal
   tests/unpack-checks/bad-specver-package-0/LICENSE
   tests/unpack-checks/bad-specver-package-0/Main.hs
   tests/unpack-checks/bad-specver-package-0/Setup.hs
-  tests/unpack-checks/bad-specver-package-0/bad-specver-package.cabal
+  tests/unpack-checks/correct-package-0.1.0.0/correct-package.cabal
+  tests/unpack-checks/correct-package-0.1.0.0/LICENSE
+  tests/unpack-checks/correct-package-0.1.0.0/Main.hs
+  tests/unpack-checks/correct-package-0.1.0.0/Setup.hs
+  tests/unpack-checks/missing-configure-0.1.0.0/LICENSE
+  tests/unpack-checks/missing-configure-0.1.0.0/Main.hs
+  tests/unpack-checks/missing-configure-0.1.0.0/missing-configure.cabal
+  tests/unpack-checks/missing-configure-0.1.0.0/Setup.hs
 
 source-repository head
-  type: git
+  type:     git
   location: https://github.com/haskell/hackage-server
 
 flag minimal
-  default: False
+  default:     False
   description: Include only the minimum feature set.
-  manual: True
+  manual:      True
 
 flag debug
-  default: False
+  default:     False
   description: Include debugging features
-  manual: True
+  manual:      True
 
 -- Requires working local outgoing email
 flag test-create-user
   default: False
-  manual: True
+  manual:  True
 
 flag cabal-parsers
   description: Enable experimental @cabal-parsers@ checks
-  manual: True
-  default: False
+  manual:      True
+  default:     False
 
 ----------------------------------------------------------------------------
 
@@ -94,70 +96,73 @@ common defaults
   -- when possible, the CI jobs use `installed`-constraints on these;
   -- see `cabal.project.local-ghc-${VERSION}` files
   build-depends:
-    , array                  >= 0.5   && < 0.6
-    , base                   >= 4.13  && < 4.16
-    , binary                 >= 0.8   && < 0.9
-    , bytestring             >= 0.10  && < 0.11
-    , containers            ^>= 0.6.0
-    , deepseq                >= 1.4   && < 1.5
-    , directory              >= 1.3   && < 1.4
-    , filepath               >= 1.4   && < 1.5
-    , mtl                   ^>= 2.2.1
-    , pretty                 >= 1.1   && < 1.2
-    , process                >= 1.6   && < 1.7
-    , text                  ^>= 1.2.2
-    , time                   >= 1.9   && < 1.12
-    , transformers           >= 0.5   && < 0.6
-    , unix                   >= 2.7   && < 2.8
+    , array         ^>=0.5
+    , base          >=4.13  && <4.16
+    , binary        ^>=0.8
+    , bytestring    ^>=0.10
+    , containers    ^>=0.6.0
+    , deepseq       ^>=1.4
+    , directory     ^>=1.3
+    , filepath      ^>=1.4
+    , mtl           ^>=2.2.1
+    , pretty        ^>=1.1
+    , process       ^>=1.6
     , scientific
+    , text          ^>=1.2.2
+    , time          >=1.9   && <1.12
+    , transformers  ^>=0.5
+    , unix          ^>=2.7
+
   -- other dependencies shared by most components
   build-depends:
-    , aeson                 ^>= 1.5
-    , Cabal                 ^>= 3.2.1.0
-    , fail                  ^>= 4.9.0
-      -- we use Control.Monad.Except, introduced in mtl-2.2.1
-    , network               >=  3 && < 3.2
-    , network-bsd           ^>= 2.8
-    , network-uri           ^>= 2.6
-    , parsec                ^>= 3.1.13
-    , tar                   ^>= 0.5
-    , unordered-containers  ^>= 0.2.10
-    , vector                ^>= 0.12
-    , zlib                  ^>= 0.6.2
+    , aeson                 ^>=1.5
+    , Cabal                 ^>=3.2.1.0
+    , fail                  ^>=4.9.0
+    , network               >=3       && <3.2
+    , network-bsd           ^>=2.8
+    , network-uri           ^>=2.6
+    , parsec                ^>=3.1.13
+    , tar                   ^>=0.5
+    , unordered-containers  ^>=0.2.10
+    , vector                ^>=0.12
+    , zlib                  ^>=0.6.2
 
-  ghc-options: -Wall -fwarn-tabs -fno-warn-unused-do-bind -fno-warn-deprecated-flags -funbox-strict-fields
+  -- we use Control.Monad.Except, introduced in mtl-2.2.1
+  ghc-options:
+    -Wall -fwarn-tabs -fno-warn-unused-do-bind
+    -fno-warn-deprecated-flags -funbox-strict-fields
 
-  if impl(ghc >= 8.2)
+  if impl(ghc >=8.2)
     ghc-options: -Werror=incomplete-patterns -Werror=missing-methods
 
-  other-extensions: CPP, TemplateHaskell
-
+  other-extensions:
+    CPP
+    TemplateHaskell
 
 library lib-server
-  import: defaults
+  import:          defaults
 
   -- TODO: move this into a 'library lib-client';
   --       needs minor source-tree restructuring
   exposed-modules:
     Distribution.Client
     Distribution.Client.Cron
-    Distribution.Client.UploadLog
+    Distribution.Client.DistroMap
+    Distribution.Client.HtPasswdDb
     Distribution.Client.Index
     Distribution.Client.Mirror.CmdLine
     Distribution.Client.Mirror.Config
+    Distribution.Client.Mirror.Repo
     Distribution.Client.Mirror.Repo.Hackage2
     Distribution.Client.Mirror.Repo.Local
-    Distribution.Client.Mirror.Repo.Util
     Distribution.Client.Mirror.Repo.Secure
     Distribution.Client.Mirror.Repo.Types
-    Distribution.Client.Mirror.Repo
+    Distribution.Client.Mirror.Repo.Util
     Distribution.Client.Mirror.Session
     Distribution.Client.Mirror.State
-
-    Distribution.Client.DistroMap
-    Distribution.Client.HtPasswdDb
     Distribution.Client.ParseApacheLogs
     Distribution.Client.TagsFile
+    Distribution.Client.UploadLog
     Distribution.Client.UserAddressesDb
 
   -- misc internal modules
@@ -166,92 +171,15 @@ library lib-server
     Data.StringTable
     Data.TarIndex
 
-  exposed-modules:
-    Paths_hackage_server
-  autogen-modules:
-    Paths_hackage_server
-
+  exposed-modules: Paths_hackage_server
+  autogen-modules: Paths_hackage_server
   exposed-modules:
     Distribution.Server
-
-    Distribution.Server.Prelude
-
-    Distribution.Server.Framework
-    Distribution.Server.Framework.Auth
-    Distribution.Server.Framework.AuthTypes
-    Distribution.Server.Framework.AuthCrypt
-    Distribution.Server.Framework.BlobStorage
-    Distribution.Server.Framework.Cache
-    Distribution.Server.Framework.Cron
-    Distribution.Server.Framework.Error
-    Distribution.Server.Framework.Logging
-    Distribution.Server.Framework.Feature
-    Distribution.Server.Framework.Hook
-    Distribution.Server.Framework.HtmlFormWrapper
-    Distribution.Server.Framework.Instances
-    Distribution.Server.Framework.MemState
-    Distribution.Server.Framework.MemSize
-    Distribution.Server.Framework.Resource
-    Distribution.Server.Framework.RequestContentTypes
-    Distribution.Server.Framework.ResponseContentTypes
-    Distribution.Server.Framework.CacheControl
-    Distribution.Server.Framework.BackupDump
-    Distribution.Server.Framework.BackupRestore
-    Distribution.Server.Framework.ServerEnv
-    Distribution.Server.Framework.Templating
-    Distribution.Server.Framework.HappstackUtils
-
-    Distribution.Server.Packages.Index
-    Distribution.Server.Packages.ModuleForest
-    Distribution.Server.Packages.PackageIndex
-    Distribution.Server.Packages.Types
-    Distribution.Server.Packages.Unpack
-    Distribution.Server.Packages.Render
-    Distribution.Server.Packages.ChangeLog
-    Distribution.Server.Packages.Readme
-    Distribution.Server.Packages.Metadata
-
-    -- [not used by anyone] Distribution.Server.Pages.Distributions
-    Distribution.Server.Pages.Group
-    Distribution.Server.Pages.Index
-    Distribution.Server.Pages.Package
-    Distribution.Server.Pages.PackageFromTemplate
-    Distribution.Server.Pages.Package.HaddockHtml
-    Distribution.Server.Pages.Package.HaddockParse
-    Distribution.Server.Pages.Recent
-    Distribution.Server.Pages.AdminLog
-    -- [reverse index disabled] Distribution.Server.Pages.Reverse
-    Distribution.Server.Pages.Template
-    Distribution.Server.Pages.Util
-
-    Distribution.Server.Users.Group
-    Distribution.Server.Users.State
-    Distribution.Server.Users.Types
-    Distribution.Server.Users.Backup
-    Distribution.Server.Users.Users
-    Distribution.Server.Users.AuthToken
-    Distribution.Server.Users.UserIdSet
-
-    Distribution.Server.Util.Histogram
-    Distribution.Server.Util.CountingMap
-    Distribution.Server.Util.CabalRevisions
-    Distribution.Server.Util.DocMeta
-    Distribution.Server.Util.Parse
-    Distribution.Server.Util.ServeTarball
-    -- [unused] Distribution.Server.Util.TarIndex
-    Distribution.Server.Util.GZip
-    Distribution.Server.Util.ContentType
-    Distribution.Server.Util.SigTerm
-    Distribution.Server.Util.ReadDigest
-    Distribution.Server.Util.Nonce
-    Distribution.Server.Util.Merge
-    Distribution.Server.Util.ParseSpecVer
-    Distribution.Server.Util.Markdown
-
     Distribution.Server.Features
     Distribution.Server.Features.Core
-    Distribution.Server.Features.Core.State
     Distribution.Server.Features.Core.Backup
+    Distribution.Server.Features.Core.State
+    Distribution.Server.Features.Mirror
     Distribution.Server.Features.Security
     Distribution.Server.Features.Security.Backup
     Distribution.Server.Features.Security.FileInfo
@@ -262,229 +190,283 @@ library lib-server
     Distribution.Server.Features.Security.ResponseContentTypes
     Distribution.Server.Features.Security.SHA256
     Distribution.Server.Features.Security.State
-    Distribution.Server.Features.Mirror
     Distribution.Server.Features.Upload
-    Distribution.Server.Features.Upload.State
     Distribution.Server.Features.Upload.Backup
+    Distribution.Server.Features.Upload.State
     Distribution.Server.Features.Users
+    Distribution.Server.Framework
+    Distribution.Server.Framework.Auth
+    Distribution.Server.Framework.AuthCrypt
+    Distribution.Server.Framework.AuthTypes
+    Distribution.Server.Framework.BackupDump
+    Distribution.Server.Framework.BackupRestore
+    Distribution.Server.Framework.BlobStorage
+    Distribution.Server.Framework.Cache
+    Distribution.Server.Framework.CacheControl
+    Distribution.Server.Framework.Cron
+    Distribution.Server.Framework.Error
+    Distribution.Server.Framework.Feature
+    Distribution.Server.Framework.HappstackUtils
+    Distribution.Server.Framework.Hook
+    Distribution.Server.Framework.HtmlFormWrapper
+    Distribution.Server.Framework.Instances
+    Distribution.Server.Framework.Logging
+    Distribution.Server.Framework.MemSize
+    Distribution.Server.Framework.MemState
+    Distribution.Server.Framework.RequestContentTypes
+    Distribution.Server.Framework.Resource
+    Distribution.Server.Framework.ResponseContentTypes
+    Distribution.Server.Framework.ServerEnv
+    Distribution.Server.Framework.Templating
+    Distribution.Server.Packages.ChangeLog
+    Distribution.Server.Packages.Index
+    Distribution.Server.Packages.Metadata
+    Distribution.Server.Packages.ModuleForest
+    Distribution.Server.Packages.PackageIndex
+    Distribution.Server.Packages.Readme
+    Distribution.Server.Packages.Render
+    Distribution.Server.Packages.Types
+    Distribution.Server.Packages.Unpack
+    Distribution.Server.Pages.AdminLog
+    Distribution.Server.Pages.Group
+    Distribution.Server.Pages.Index
+    Distribution.Server.Pages.Package
+    Distribution.Server.Pages.Package.HaddockHtml
+    Distribution.Server.Pages.Package.HaddockParse
+    Distribution.Server.Pages.PackageFromTemplate
+    Distribution.Server.Pages.Recent
+    Distribution.Server.Pages.Template
+    Distribution.Server.Pages.Util
+    Distribution.Server.Prelude
+    Distribution.Server.Users.AuthToken
+    Distribution.Server.Users.Backup
+    Distribution.Server.Users.Group
+    Distribution.Server.Users.State
+    Distribution.Server.Users.Types
+    Distribution.Server.Users.UserIdSet
+    Distribution.Server.Users.Users
+    Distribution.Server.Util.CabalRevisions
+    Distribution.Server.Util.ContentType
+    Distribution.Server.Util.CountingMap
+    Distribution.Server.Util.DocMeta
+    Distribution.Server.Util.GZip
+    Distribution.Server.Util.Histogram
+    Distribution.Server.Util.Markdown
+    Distribution.Server.Util.Merge
+    Distribution.Server.Util.Nonce
+    Distribution.Server.Util.Parse
+    Distribution.Server.Util.ParseSpecVer
+    Distribution.Server.Util.ReadDigest
+    Distribution.Server.Util.ServeTarball
+    Distribution.Server.Util.SigTerm
 
-
+  -- [not used by anyone] Distribution.Server.Pages.Distributions
+  -- [reverse index disabled] Distribution.Server.Pages.Reverse
+  -- [unused] Distribution.Server.Util.TarIndex
   if flag(minimal)
     cpp-options: -DMINIMAL
+
   else
     exposed-modules:
-      Distribution.Server.Features.TarIndexCache
-      Distribution.Server.Features.TarIndexCache.State
-      Distribution.Server.Features.LegacyRedirects
-      Distribution.Server.Features.LegacyPasswds
-      Distribution.Server.Features.LegacyPasswds.Auth
-      Distribution.Server.Features.PackageContents
       Distribution.Server.Features.AdminFrontend
       Distribution.Server.Features.AdminLog
       Distribution.Server.Features.BuildReports
+      Distribution.Server.Features.BuildReports.Backup
       Distribution.Server.Features.BuildReports.BuildReport
       Distribution.Server.Features.BuildReports.BuildReports
-      Distribution.Server.Features.BuildReports.Backup
       Distribution.Server.Features.BuildReports.Render
       Distribution.Server.Features.BuildReports.State
-      Distribution.Server.Features.PackageCandidates
-      Distribution.Server.Features.PackageCandidates.Types
-      Distribution.Server.Features.PackageCandidates.State
-      Distribution.Server.Features.PackageCandidates.Backup
-      Distribution.Server.Features.PackageFeed
-      Distribution.Server.Features.PackageList
       Distribution.Server.Features.Distro
-      Distribution.Server.Features.Distro.Distributions
       Distribution.Server.Features.Distro.Backup
+      Distribution.Server.Features.Distro.Distributions
       Distribution.Server.Features.Distro.State
       Distribution.Server.Features.Distro.Types
       Distribution.Server.Features.Documentation
       Distribution.Server.Features.Documentation.State
       Distribution.Server.Features.DownloadCount
-      Distribution.Server.Features.DownloadCount.State
       Distribution.Server.Features.DownloadCount.Backup
+      Distribution.Server.Features.DownloadCount.State
       Distribution.Server.Features.EditCabalFiles
-      Distribution.Server.Features.Html
-      Distribution.Server.Features.Html.HtmlUtilities
-      Distribution.Server.Features.HoogleData
       Distribution.Server.Features.HaskellPlatform
       Distribution.Server.Features.HaskellPlatform.State
+      Distribution.Server.Features.HoogleData
+      Distribution.Server.Features.Html
+      Distribution.Server.Features.Html.HtmlUtilities
+      Distribution.Server.Features.LegacyPasswds
+      Distribution.Server.Features.LegacyPasswds.Auth
+      Distribution.Server.Features.LegacyRedirects
+      Distribution.Server.Features.PackageCandidates
+      Distribution.Server.Features.PackageCandidates.Backup
+      Distribution.Server.Features.PackageCandidates.State
+      Distribution.Server.Features.PackageCandidates.Types
+      Distribution.Server.Features.PackageContents
+      Distribution.Server.Features.PackageFeed
+      Distribution.Server.Features.PackageInfoJSON
+      Distribution.Server.Features.PackageInfoJSON.State
+      Distribution.Server.Features.PackageList
+      Distribution.Server.Features.PreferredVersions
+      Distribution.Server.Features.PreferredVersions.Backup
+      Distribution.Server.Features.PreferredVersions.State
+      Distribution.Server.Features.RecentPackages
       Distribution.Server.Features.Search
       Distribution.Server.Features.Search.BM25F
+      Distribution.Server.Features.Search.DocFeatVals
       Distribution.Server.Features.Search.DocIdSet
       Distribution.Server.Features.Search.DocTermIds
-      Distribution.Server.Features.Search.DocFeatVals
       Distribution.Server.Features.Search.ExtractDescriptionTerms
       Distribution.Server.Features.Search.ExtractNameTerms
       Distribution.Server.Features.Search.PkgSearch
       Distribution.Server.Features.Search.SearchEngine
       Distribution.Server.Features.Search.SearchIndex
       Distribution.Server.Features.Search.TermBag
+      Distribution.Server.Features.ServerIntrospect
+      Distribution.Server.Features.Sitemap
       Distribution.Server.Features.Sitemap.Functions
-      Distribution.Server.Features.Votes
-      Distribution.Server.Features.Votes.State
-      Distribution.Server.Features.Votes.Render
-      Distribution.Server.Features.RecentPackages
-      Distribution.Server.Features.PreferredVersions
-      Distribution.Server.Features.PreferredVersions.State
-      Distribution.Server.Features.PreferredVersions.Backup
-      -- [reverse index disabled] Distribution.Server.Features.ReverseDependencies
-      -- [reverse index disabled] Distribution.Server.Features.ReverseDependencies.State
+      Distribution.Server.Features.StaticFiles
       Distribution.Server.Features.Tags
       Distribution.Server.Features.Tags.Backup
       Distribution.Server.Features.Tags.State
+      Distribution.Server.Features.TarIndexCache
+      Distribution.Server.Features.TarIndexCache.State
       Distribution.Server.Features.UserDetails
       Distribution.Server.Features.UserSignup
-      Distribution.Server.Features.StaticFiles
-      Distribution.Server.Features.ServerIntrospect
-      Distribution.Server.Features.Sitemap
+      Distribution.Server.Features.Votes
+      Distribution.Server.Features.Votes.Render
+      Distribution.Server.Features.Votes.State
 
+  -- [reverse index disabled] Distribution.Server.Features.ReverseDependencies
+  -- [reverse index disabled] Distribution.Server.Features.ReverseDependencies.State
   if flag(debug)
-    cpp-options: -DDEBUG
-    other-modules:
-      Distribution.Server.Features.Crash
+    cpp-options:   -DDEBUG
+    other-modules: Distribution.Server.Features.Crash
 
   -- Except for GHC-bundled libraries (see above), it's more easier/manageable from
   -- a maintenance POV to support only single major-version-ranges
   --
   -- NB: see also build-depends in `common defaults`!
   build-depends:
-    , HStringTemplate       ^>= 0.8
-    , HTTP                  ^>= 4000.3.6
-    , QuickCheck            ^>= 2.14
-    , acid-state            ^>= 0.16
-    , async                 ^>= 2.2.1
-    -- requires bumping http-io-streams
-    , attoparsec            ^>= 0.13
-    , base16-bytestring     ^>= 1.0
-    -- requires bumping http-io-streams
-    , base64-bytestring     ^>= 1.1
-      --NOTE: blaze-builder-0.4 is now a compat package that uses bytestring-0.10 builder
-    , blaze-builder         ^>= 0.4
-    , blaze-html            ^>= 0.9
-    , cereal                ^>= 0.5
-    , commonmark	    ^>= 0.1
-    , commonmark-extensions ^>= 0.2
-    , cryptohash-md5        ^>= 0.11.100
-    , cryptohash-sha256     ^>= 0.11.100
-    , csv                   ^>= 0.1
-    , ed25519               ^>= 0.0.5
-    , hackage-security      ^>= 0.6
-    , hackage-security-HTTP ^>= 0.1.1
-    , haddock-library       > 1.7 && < 2
-    , happstack-server      ^>= 7.7.1
-    , hashable              ^>= 1.3
-    , hslogger              ^>= 1.3.1
-    , lifted-base           ^>= 0.2.1
-    , mime-mail             ^>= 0.5
-    , random                ^>= 1.2
-    , rss                   ^>= 3000.2.0.7
-    , safecopy              ^>= 0.10
-    , semigroups            ^>= 0.19
-    , split                 ^>= 0.2
-    , stm                   ^>= 2.5.0
-    , tagged                ^>= 0.8.5
-    , time-locale-compat    ^>= 0.1.0.1
-    , xhtml                 ^>= 3000.2
-    , xmlgen                ^>= 0.6
-    , xss-sanitize          ^>= 0.3.6
+    , acid-state             ^>=0.16
+    , async                  ^>=2.2.1
+    , attoparsec             ^>=0.13
+    , base16-bytestring      ^>=1.0
+    , base64-bytestring      ^>=1.1
+    , blaze-builder          ^>=0.4
+    , blaze-html             ^>=0.9
+    , cereal                 ^>=0.5
+    , commonmark             ^>=0.1
+    , commonmark-extensions  ^>=0.2
+    , cryptohash-md5         ^>=0.11.100
+    , cryptohash-sha256      ^>=0.11.100
+    , csv                    ^>=0.1
+    , ed25519                ^>=0.0.5
+    , hackage-security       ^>=0.6
+    , hackage-security-HTTP  ^>=0.1.1
+    , haddock-library        >1.7        && <2
+    , happstack-server       ^>=7.7.1
+    , hashable               ^>=1.3
+    , hslogger               ^>=1.3.1
+    , HStringTemplate        ^>=0.8
+    , HTTP                   ^>=4000.3.6
+    , lifted-base            ^>=0.2.1
+    , mime-mail              ^>=0.5
+    , QuickCheck             ^>=2.14
+    , random                 ^>=1.2
+    , rss                    ^>=3000.2.0.7
+    , safecopy               ^>=0.10
+    , semigroups             ^>=0.19
+    , split                  ^>=0.2
+    , stm                    ^>=2.5.0
+    , tagged                 ^>=0.8.5
+    , time-locale-compat     ^>=0.1.0.1
+    , xhtml                  ^>=3000.2
+    , xmlgen                 ^>=0.6
+    , xss-sanitize           ^>=0.3.6
 
+  -- requires bumping http-io-streams
+  -- requires bumping http-io-streams
+  --NOTE: blaze-builder-0.4 is now a compat package that uses bytestring-0.10 builder
   if !flag(minimal)
-    build-depends: snowball ^>= 1.0
-                 , tokenize ^>= 0.3
+    build-depends:
+      , snowball  ^>=1.0
+      , tokenize  ^>=0.3
 
   if flag(cabal-parsers)
-    build-depends: cabal-parsers ^>= 0
+    build-depends: cabal-parsers ^>=0
 
-  if !os(darwin)
+  if !os(osx)
     extra-libraries: crypt
 
 ----------------------------------------------------------------------------
 
 common exe-defaults
-  import: defaults
-
-  build-depends: lib-server
-  hs-source-dirs: exes
-  ghc-options: -threaded -rtsopts
-
+  import:          defaults
+  build-depends:   lib-server
+  hs-source-dirs:  exes
+  ghc-options:     -threaded -rtsopts
   other-modules:   Paths_hackage_server
   autogen-modules: Paths_hackage_server
 
-
 executable hackage-server
-  import: exe-defaults
-
-  main-is: Main.hs
-
+  import:      exe-defaults
+  main-is:     Main.hs
   ghc-options: -with-rtsopts=-I00
 
 executable hackage-mirror
-  import: exe-defaults
-
-  main-is: MirrorClient.hs
-
+  import:        exe-defaults
+  main-is:       MirrorClient.hs
   build-depends:
-    -- version constraints inherited from lib-server
-    , HTTP
     , hackage-security
-
-executable hackage-build
-  import: exe-defaults
-
-  main-is: BuildClient.hs
-
-  build-depends:
-    -- version constraints inherited from lib-server
     , HTTP
 
-  -- Runtime dependency only;
-  -- TODO: we have no proper support for this kind of dependencies in cabal
-  -- `build-tool-depends` specifies compile/test-time deps, but not run-time deps
-  --
-  -- build-tool-depends: hscolour:hscolour >= 1.8
+-- version constraints inherited from lib-server
+executable hackage-build
+  import:        exe-defaults
+  main-is:       BuildClient.hs
+  build-depends: HTTP
 
-  -- ghc-options: -threaded option is necessary for correct handling
-  -- of CTRL-C (not sure why :( )
+-- version constraints inherited from lib-server
+-- Runtime dependency only;
+-- TODO: we have no proper support for this kind of dependencies in cabal
+-- `build-tool-depends` specifies compile/test-time deps, but not run-time deps
+--
+-- build-tool-depends: hscolour:hscolour >= 1.8
+
+-- ghc-options: -threaded option is necessary for correct handling
+-- of CTRL-C (not sure why :( )
 
 executable hackage-import
-  import: exe-defaults
+  import:        exe-defaults
+
   -- TODO/FIXME: the code has bitrotten
-  buildable: False
-
-  main-is: ImportClient.hs
-
+  buildable:     False
+  main-is:       ImportClient.hs
   build-depends:
-      -- version constraints inherited from lib-server
-    , HTTP
     , async
     , csv
+    , HTTP
     , time-locale-compat
 
+-- version constraints inherited from lib-server
 ----------------------------------------------------------------------------
 
 common test-defaults
-  import: defaults
-
-  build-depends: lib-server
-  hs-source-dirs: tests
-  ghc-options: -threaded -rtsopts -fno-warn-orphans
-
+  import:          defaults
+  build-depends:   lib-server
+  hs-source-dirs:  tests
+  ghc-options:     -threaded -rtsopts -fno-warn-orphans
   other-modules:   Paths_hackage_server
   autogen-modules: Paths_hackage_server
 
-
 test-suite HighLevelTest
-  import:         test-defaults
-
-  type:           exitcode-stdio-1.0
-  main-is:        HighLevelTest.hs
+  import:             test-defaults
+  type:               exitcode-stdio-1.0
+  main-is:            HighLevelTest.hs
   other-modules:
     HackageClientUtils
-    Run
-    MailUtils
     HttpUtils
+    MailUtils
     Package
+    Run
     Util
 
   -- This tells cabal that this test depends on the executable
@@ -494,66 +476,64 @@ test-suite HighLevelTest
   --
   -- TODO: hackage-server isn't build-tool, it's run-tool!
   -- so if this works, it's accidental!
-  build-tool-depends: hackage-server:hackage-server
+  build-tool-depends: hackage-server:hackage-server -any
 
   -- NOTE: lib-server is not a real dependency; it's only used to inherit version constraints
   build-depends:
-    -- version constraints inherited from lib-server
-    , HTTP
     , base64-bytestring
+    , HTTP
+    , http-io-streams    ^>=0.1.0.0
+    , io-streams         ^>=1.5.0.1
     , random
-      -- component-specific dependencies
-    , xml             ^>= 1.3.14
-    , io-streams      ^>= 1.5.0.1
-    , http-io-streams ^>= 0.1.0.0
+    , xml                ^>=1.3.14
 
+-- version constraints inherited from lib-server
+-- component-specific dependencies
 test-suite CreateUserTest
-  import:         test-defaults
+  import:             test-defaults
 
-  if ! flag(test-create-user)
+  if !flag(test-create-user)
     buildable: False
-  type:           exitcode-stdio-1.0
-  main-is:        CreateUserTest.hs
+
+  type:               exitcode-stdio-1.0
+  main-is:            CreateUserTest.hs
 
   -- see note in 'Test-Suite HighLevelTest'
-  build-tool-depends: hackage-server:hackage-server
+  build-tool-depends: hackage-server:hackage-server -any
 
   -- NOTE: lib-server is not a real dependency; it's only used to inherit version constraints
   build-depends:
-    -- version constraints inherited from lib-server
-    , HTTP
     , base64-bytestring
+    , HTTP
     , random
-      -- component-specific dependencies
-    , xml ^>= 1.3.14
+    , xml                ^>=1.3.14
 
+-- version constraints inherited from lib-server
+-- component-specific dependencies
 test-suite PackageTests
-  import:         test-defaults
-
-  type:           exitcode-stdio-1.0
-  main-is:        PackageTestMain.hs
-  other-modules:  Distribution.Server.Packages.UnpackTest
-
+  import:        test-defaults
+  type:          exitcode-stdio-1.0
+  main-is:       PackageTestMain.hs
+  other-modules: Distribution.Server.Packages.UnpackTest
   build-depends:
-    -- version constraints inherited from lib-server
-    -- component-specific dependencies
-    , tasty        ^>= 1.4
-    , tasty-hunit  ^>= 0.10
-    , HUnit        ^>= 1.6
+    , HUnit        ^>=1.6
+    , tasty        ^>=1.4
+    , tasty-hunit  ^>=0.10
 
+-- version constraints inherited from lib-server
+-- component-specific dependencies
 test-suite HashTests
-  import:         test-defaults
-
-  type:           exitcode-stdio-1.0
-  main-is:        HashTestMain.hs
-
+  import:        test-defaults
+  type:          exitcode-stdio-1.0
+  main-is:       HashTestMain.hs
   build-depends:
-    -- version constraints inherited from lib-server
     , base16-bytestring
     , cereal
     , cryptohash-md5
     , cryptohash-sha256
     , safecopy
-      -- component-specific dependencies
-    , tasty       ^>= 1.4
-    , tasty-hunit ^>= 0.10
+    , tasty              ^>=1.4
+    , tasty-hunit        ^>=0.10
+
+-- version constraints inherited from lib-server
+-- component-specific dependencies
